@@ -303,21 +303,22 @@ File* File::Open(Namespace* namespc, const char* path, FileOpenMode mode) {
 }
 
 File* File::OpenUri(Namespace* namespc, const char* uri, FileOpenMode mode) {
-  UriDecoder uri_decoder(uri);
-  if (uri_decoder.decoded() == NULL) {
-    SetLastError(ERROR_INVALID_NAME);
-    return NULL;
-  }
+  // UriDecoder uri_decoder(uri);
+  // if (uri_decoder.decoded() == NULL) {
+  //   SetLastError(ERROR_INVALID_NAME);
+  //   return NULL;
+  // }
 
-  Utf8ToWideScope uri_w(uri_decoder.decoded());
-  if (!UrlIsFileUrlW(uri_w.wide())) {
-    return FileOpenW(uri_w.wide(), mode);
-  }
-  wchar_t filename_w[MAX_PATH];
-  DWORD filename_len = MAX_PATH;
-  HRESULT result = PathCreateFromUrlW(uri_w.wide(),
-      filename_w, &filename_len, /* dwFlags= */ NULL);
-  return (result == S_OK) ? FileOpenW(filename_w, mode) : NULL;
+  // Utf8ToWideScope uri_w(uri_decoder.decoded());
+  // if (!UrlIsFileUrlW(uri_w.wide())) {
+  //   return FileOpenW(uri_w.wide(), mode);
+  // }
+  // wchar_t filename_w[MAX_PATH];
+  // DWORD filename_len = MAX_PATH;
+  // HRESULT result = PathCreateFromUrlW(uri_w.wide(),
+  //     filename_w, &filename_len, /* dwFlags= */ NULL);
+  // return (result == S_OK) ? FileOpenW(filename_w, mode) : NULL;
+  return NULL:
 }
 
 File* File::OpenStdio(int fd) {
