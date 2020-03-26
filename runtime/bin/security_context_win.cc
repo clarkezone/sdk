@@ -20,7 +20,9 @@
 #include "bin/secure_socket_utils.h"
 #include "platform/syslog.h"
 
-#pragma comment(lib, "crypt32.lib")
+#ifndef FLUTTER_WINRT
+  #pragma comment(lib, "crypt32.lib")
+#endif
 
 namespace dart {
 namespace bin {
@@ -42,6 +44,9 @@ static void PrintSSLErr(const char* str) {
 
 // Add certificates from Windows trusted root store.
 static bool AddCertificatesFromRootStore(X509_STORE* store) {
+#ifdef FLUTTER_WINRT
+  return false;
+#else
   // Open root system store.
   // Note that only current user certificates are accessible using this method,
   // not the local machine store.
@@ -98,6 +103,7 @@ static bool AddCertificatesFromRootStore(X509_STORE* store) {
     return false;
   }
   return true;
+#endif
 }
 
 void SSLCertContext::TrustBuiltinRoots() {

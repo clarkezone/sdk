@@ -23,6 +23,8 @@ void NativeSymbolResolver::Init() {
     lock_ = new Mutex();
   }
   running_ = true;
+
+ #ifndef FLUTTER_WINRT
   SymSetOptions(SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS);
   HANDLE hProcess = GetCurrentProcess();
   if (!SymInitialize(hProcess, NULL, TRUE)) {
@@ -32,6 +34,7 @@ void NativeSymbolResolver::Init() {
                  error);
     return;
   }
+ #endif
 }
 
 void NativeSymbolResolver::Cleanup() {
@@ -40,6 +43,7 @@ void NativeSymbolResolver::Cleanup() {
     return;
   }
   running_ = false;
+#ifndef FLUTTER_WINRT
   HANDLE hProcess = GetCurrentProcess();
   if (!SymCleanup(hProcess)) {
     DWORD error = GetLastError();
@@ -47,9 +51,13 @@ void NativeSymbolResolver::Cleanup() {
                  ")\n",
                  error);
   }
+#endif
 }
 
 char* NativeSymbolResolver::LookupSymbolName(uword pc, uword* start) {
+#ifdef FLUTTER_WINRT
+  return NULL;
+#else
   static const intptr_t kMaxNameLength = 2048;
   static const intptr_t kSymbolInfoSize = sizeof(SYMBOL_INFO);  // NOLINT.
   static char buffer[kSymbolInfoSize + kMaxNameLength];
@@ -76,6 +84,7 @@ char* NativeSymbolResolver::LookupSymbolName(uword pc, uword* start) {
     *start = pc - displacement;
   }
   return Utils::StrDup(pSymbol->Name);
+#endif
 }
 
 void NativeSymbolResolver::FreeSymbolName(char* name) {

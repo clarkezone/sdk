@@ -932,19 +932,27 @@ intptr_t Process::CurrentProcessId() {
 }
 
 int64_t Process::CurrentRSS() {
+#ifdef FLUTTER_WINRT
+  return -1;
+#else
   PROCESS_MEMORY_COUNTERS pmc;
   if (!GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
     return -1;
   }
   return pmc.WorkingSetSize;
+#endif
 }
 
 int64_t Process::MaxRSS() {
+#ifdef FLUTTER_WINRT
+  return -1;
+#else
   PROCESS_MEMORY_COUNTERS pmc;
   if (!GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
     return -1;
   }
   return pmc.PeakWorkingSetSize;
+#endif
 }
 
 static SignalInfo* signal_handlers = NULL;
