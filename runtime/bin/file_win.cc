@@ -318,7 +318,7 @@ File* File::OpenUri(Namespace* namespc, const char* uri, FileOpenMode mode) {
   // HRESULT result = PathCreateFromUrlW(uri_w.wide(),
   //     filename_w, &filename_len, /* dwFlags= */ NULL);
   // return (result == S_OK) ? FileOpenW(filename_w, mode) : NULL;
-  return NULL:
+  return NULL;
 }
 
 File* File::OpenStdio(int fd) {
