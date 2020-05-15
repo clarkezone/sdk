@@ -153,7 +153,7 @@ vars = {
   "web_socket_channel_tag": "490061ef0e22d3c8460ad2802f9948219365ad6b",
   "WebCore_rev": "fb11e887f77919450e497344da570d780e078bc8",
   "yaml_tag": "62e9f6b3a933b1f76dd3007d1a5ce0be8e429b2d",
-  "zlib_rev": "c44fb7248079cc3d5563b14b3f758aee60d6b415",
+  "zlib_rev": "ae385786edb15f57e992c5e9dd9464e376d69399",
   "crashpad_rev": "bf327d8ceb6a669607b0dbab5a83a275d03f99ed",
   "minichromium_rev": "8d641e30a8b12088649606b912c2bc4947419ccc",
   "googletest_rev": "f854f1d27488996dc8a6db3c9453f80b02585e12",
