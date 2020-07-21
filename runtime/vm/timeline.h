@@ -51,6 +51,7 @@ class Zone;
 #define ENDLESS_RECORDER_NAME "Endless"
 #define FUCHSIA_RECORDER_NAME "Fuchsia"
 #define MACOS_RECORDER_NAME "Macos"
+#define WINDOWS_RECORDER_NAME "Windows"
 #define RING_RECORDER_NAME "Ring"
 #define STARTUP_RECORDER_NAME "Startup"
 #define SYSTRACE_RECORDER_NAME "Systrace"
@@ -481,6 +482,7 @@ class TimelineEvent {
   friend class TimelineEventPlatformRecorder;
   friend class TimelineEventFuchsiaRecorder;
   friend class TimelineEventMacosRecorder;
+  friend class TimelineEventWindowsRecorder;
   friend class TimelineStream;
   friend class TimelineTestHelper;
   DISALLOW_COPY_AND_ASSIGN(TimelineEvent);
@@ -983,6 +985,23 @@ class TimelineEventMacosRecorder : public TimelineEventPlatformRecorder {
 
  private:
   void OnEvent(TimelineEvent* event) API_AVAILABLE(ios(12.0), macos(10.14));
+};
+#endif  // defined(HOST_OS_MACOS)
+
+#if defined(HOST_OS_WINDOWS)
+// A recorder that sends events to Windows's ETW subsystem. See:
+// https://docs.microsoft.com/en-us/windows/win32/api/_tracelogging/
+// and https://docs.microsoft.com/en-us/windows/win32/tracelogging/tracelogging-c-cpp-tracelogging-examples
+class TimelineEventWindowsRecorder : public TimelineEventPlatformRecorder {
+ public:
+  TimelineEventWindowsRecorder();
+  virtual ~TimelineEventWindowsRecorder();
+
+  const char* name() const { return WINDOWS_RECORDER_NAME; }
+  intptr_t Size() { return 0; }
+
+ private:
+  void OnEvent(TimelineEvent* event);
 };
 #endif  // defined(HOST_OS_MACOS)
 

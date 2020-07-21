@@ -122,6 +122,8 @@ static TimelineEventRecorder* CreateTimelineRecorder() {
       }
 #elif defined(HOST_OS_FUCHSIA)
       return new TimelineEventFuchsiaRecorder();
+#elif defined(HOST_OS_WINDOWS)
+      return new TimelineEventWindowsRecorder();
 #else
       OS::PrintErr(
           "Warning: The systrace timeline recorder is equivalent to the"
