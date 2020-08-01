@@ -67,12 +67,14 @@ void TimelineEventWindowsRecorder::OnEvent(TimelineEvent* event) {
     }
     case TimelineEvent::kAsyncBegin: {
       TraceLoggingWrite(g_hMyComponentProvider, "Dart Async Begin",
+                        TraceLoggingString(label),
                         TraceLoggingInt64(event->AsyncId())
                           );
       break;
     }
     case TimelineEvent::kAsyncEnd: {
       TraceLoggingWrite(g_hMyComponentProvider, "Dart Async End",
+                        TraceLoggingString(label),
                         TraceLoggingInt64(event->AsyncId()));
       break;
     }
