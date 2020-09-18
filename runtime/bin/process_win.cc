@@ -932,7 +932,7 @@ intptr_t Process::CurrentProcessId() {
 }
 
 int64_t Process::CurrentRSS() {
-  return =1;
+  return -1;
   // PROCESS_MEMORY_COUNTERS pmc;
   // if (!GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
   //   return -1;
@@ -941,7 +941,7 @@ int64_t Process::CurrentRSS() {
 }
 
 int64_t Process::MaxRSS() {
-  return =1;
+  return -1;
   // PROCESS_MEMORY_COUNTERS pmc;
   // if (!GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
   //   return -1;
