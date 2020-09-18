@@ -23,15 +23,15 @@ void NativeSymbolResolver::Init() {
     lock_ = new Mutex();
   }
   running_ = true;
-  SymSetOptions(SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS);
-  HANDLE hProcess = GetCurrentProcess();
-  if (!SymInitialize(hProcess, NULL, TRUE)) {
-    DWORD error = GetLastError();
-    OS::PrintErr("Failed to init NativeSymbolResolver (SymInitialize %" Pu32
-                 ")\n",
-                 error);
-    return;
-  }
+  // SymSetOptions(SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS);
+  // HANDLE hProcess = GetCurrentProcess();
+  // if (!SymInitialize(hProcess, NULL, TRUE)) {
+  //   DWORD error = GetLastError();
+  //   OS::PrintErr("Failed to init NativeSymbolResolver (SymInitialize %" Pu32
+  //                ")\n",
+  //                error);
+  //   return;
+  // }
 }
 
 void NativeSymbolResolver::Cleanup() {
@@ -40,42 +40,43 @@ void NativeSymbolResolver::Cleanup() {
     return;
   }
   running_ = false;
-  HANDLE hProcess = GetCurrentProcess();
-  if (!SymCleanup(hProcess)) {
-    DWORD error = GetLastError();
-    OS::PrintErr("Failed to shutdown NativeSymbolResolver (SymCleanup  %" Pu32
-                 ")\n",
-                 error);
-  }
+  // HANDLE hProcess = GetCurrentProcess();
+  // if (!SymCleanup(hProcess)) {
+  //   DWORD error = GetLastError();
+  //   OS::PrintErr("Failed to shutdown NativeSymbolResolver (SymCleanup  %" Pu32
+  //                ")\n",
+  //                error);
+  // }
 }
 
 char* NativeSymbolResolver::LookupSymbolName(uword pc, uword* start) {
-  static const intptr_t kMaxNameLength = 2048;
-  static const intptr_t kSymbolInfoSize = sizeof(SYMBOL_INFO);  // NOLINT.
-  static char buffer[kSymbolInfoSize + kMaxNameLength];
-  static char name_buffer[kMaxNameLength];
-  MutexLocker lock(lock_);
-  if (!running_) {
-    return NULL;
-  }
-  if (start != NULL) {
-    *start = NULL;
-  }
-  memset(&buffer[0], 0, sizeof(buffer));
-  HANDLE hProcess = GetCurrentProcess();
-  DWORD64 address = static_cast<DWORD64>(pc);
-  PSYMBOL_INFO pSymbol = reinterpret_cast<PSYMBOL_INFO>(&buffer[0]);
-  pSymbol->SizeOfStruct = kSymbolInfoSize;
-  pSymbol->MaxNameLen = kMaxNameLength;
-  DWORD64 displacement;
-  BOOL r = SymFromAddr(hProcess, address, &displacement, pSymbol);
-  if (r == FALSE) {
-    return NULL;
-  }
-  if (start != NULL) {
-    *start = pc - displacement;
-  }
-  return Utils::StrDup(pSymbol->Name);
+  return NULL;
+  // static const intptr_t kMaxNameLength = 2048;
+  // static const intptr_t kSymbolInfoSize = sizeof(SYMBOL_INFO);  // NOLINT.
+  // static char buffer[kSymbolInfoSize + kMaxNameLength];
+  // static char name_buffer[kMaxNameLength];
+  // MutexLocker lock(lock_);
+  // if (!running_) {
+  //   return NULL;
+  // }
+  // if (start != NULL) {
+  //   *start = NULL;
+  // }
+  // memset(&buffer[0], 0, sizeof(buffer));
+  // HANDLE hProcess = GetCurrentProcess();
+  // DWORD64 address = static_cast<DWORD64>(pc);
+  // PSYMBOL_INFO pSymbol = reinterpret_cast<PSYMBOL_INFO>(&buffer[0]);
+  // pSymbol->SizeOfStruct = kSymbolInfoSize;
+  // pSymbol->MaxNameLen = kMaxNameLength;
+  // DWORD64 displacement;
+  // BOOL r = SymFromAddr(hProcess, address, &displacement, pSymbol);
+  // if (r == FALSE) {
+  //   return NULL;
+  // }
+  // if (start != NULL) {
+  //   *start = pc - displacement;
+  // }
+  // return Utils::StrDup(pSymbol->Name);
 }
 
 void NativeSymbolResolver::FreeSymbolName(char* name) {

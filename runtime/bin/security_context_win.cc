@@ -20,7 +20,7 @@
 #include "bin/secure_socket_utils.h"
 #include "platform/syslog.h"
 
-#pragma comment(lib, "crypt32.lib")
+//#pragma comment(lib, "crypt32.lib")
 
 namespace dart {
 namespace bin {
@@ -42,62 +42,63 @@ static void PrintSSLErr(const char* str) {
 
 // Add certificates from Windows trusted root store.
 static bool AddCertificatesFromRootStore(X509_STORE* store) {
-  // Open root system store.
-  // Note that only current user certificates are accessible using this method,
-  // not the local machine store.
-  HCERTSTORE cert_store = CertOpenSystemStore(NULL, L"ROOT");
-  if (cert_store == NULL) {
-    if (SSL_LOG_STATUS) {
-      DWORD error = GetLastError();
-      Syslog::PrintErr("Failed to open Windows root store due to %d\n", error);
-    }
-    return false;
-  }
+  return false;
+  // // Open root system store.
+  // // Note that only current user certificates are accessible using this method,
+  // // not the local machine store.
+  // HCERTSTORE cert_store = CertOpenSystemStore(NULL, L"ROOT");
+  // if (cert_store == NULL) {
+  //   if (SSL_LOG_STATUS) {
+  //     DWORD error = GetLastError();
+  //     Syslog::PrintErr("Failed to open Windows root store due to %d\n", error);
+  //   }
+  //   return false;
+  // }
 
-  // Iterating through all certificates in the store. A NULL is required to
-  // start iteration.
-  PCCERT_CONTEXT cert_context = NULL;
-  do {
-    cert_context = CertEnumCertificatesInStore(cert_store, cert_context);
-    if (cert_context == NULL) {
-      // reach the end of store.
-      break;
-    }
-    BIO* root_cert_bio =
-        BIO_new_mem_buf(const_cast<unsigned char*>(cert_context->pbCertEncoded),
-                        cert_context->cbCertEncoded);
-    // `root_cert` has to be initialized to NULL, otherwise, it will be
-    // considerred as an existing X509 and cause segmentation fault.
-    X509* root_cert = NULL;
-    if (d2i_X509_bio(root_cert_bio, &root_cert) == NULL) {
-      if (SSL_LOG_STATUS) {
-        PrintSSLErr("Fail to read certificate");
-      }
-      BIO_free(root_cert_bio);
-      continue;
-    }
-    BIO_free(root_cert_bio);
-    int status = X509_STORE_add_cert(store, root_cert);
-    if (status == 0) {
-      if (SSL_LOG_STATUS) {
-        PrintSSLErr("Fail to add certificate to trust store");
-      }
-      X509_free(root_cert);
-      CertFreeCertificateContext(cert_context);
-      CertCloseStore(cert_store, 0);
-      return false;
-    }
-  } while (cert_context != NULL);
+  // // Iterating through all certificates in the store. A NULL is required to
+  // // start iteration.
+  // PCCERT_CONTEXT cert_context = NULL;
+  // do {
+  //   cert_context = CertEnumCertificatesInStore(cert_store, cert_context);
+  //   if (cert_context == NULL) {
+  //     // reach the end of store.
+  //     break;
+  //   }
+  //   BIO* root_cert_bio =
+  //       BIO_new_mem_buf(const_cast<unsigned char*>(cert_context->pbCertEncoded),
+  //                       cert_context->cbCertEncoded);
+  //   // `root_cert` has to be initialized to NULL, otherwise, it will be
+  //   // considerred as an existing X509 and cause segmentation fault.
+  //   X509* root_cert = NULL;
+  //   if (d2i_X509_bio(root_cert_bio, &root_cert) == NULL) {
+  //     if (SSL_LOG_STATUS) {
+  //       PrintSSLErr("Fail to read certificate");
+  //     }
+  //     BIO_free(root_cert_bio);
+  //     continue;
+  //   }
+  //   BIO_free(root_cert_bio);
+  //   int status = X509_STORE_add_cert(store, root_cert);
+  //   if (status == 0) {
+  //     if (SSL_LOG_STATUS) {
+  //       PrintSSLErr("Fail to add certificate to trust store");
+  //     }
+  //     X509_free(root_cert);
+  //     CertFreeCertificateContext(cert_context);
+  //     CertCloseStore(cert_store, 0);
+  //     return false;
+  //   }
+  // } while (cert_context != NULL);
 
-  // It always returns non-zero.
-  CertFreeCertificateContext(cert_context);
-  if (!CertCloseStore(cert_store, 0)) {
-    if (SSL_LOG_STATUS) {
-      PrintSSLErr("Fail to close system root store");
-    }
-    return false;
-  }
-  return true;
+  // // It always returns non-zero.
+  // CertFreeCertificateContext(cert_context);
+  // if (!CertCloseStore(cert_store, 0)) {
+  //   if (SSL_LOG_STATUS) {
+  //     PrintSSLErr("Fail to close system root store");
+  //   }
+  //   return false;
+  // }
+  // return true;
 }
 
 void SSLCertContext::TrustBuiltinRoots() {
