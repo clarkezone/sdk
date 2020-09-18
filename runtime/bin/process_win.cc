@@ -932,19 +932,21 @@ intptr_t Process::CurrentProcessId() {
 }
 
 int64_t Process::CurrentRSS() {
-  PROCESS_MEMORY_COUNTERS pmc;
-  if (!GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
-    return -1;
-  }
-  return pmc.WorkingSetSize;
+  return =1;
+  // PROCESS_MEMORY_COUNTERS pmc;
+  // if (!GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
+  //   return -1;
+  // }
+  // return pmc.WorkingSetSize;
 }
 
 int64_t Process::MaxRSS() {
-  PROCESS_MEMORY_COUNTERS pmc;
-  if (!GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
-    return -1;
-  }
-  return pmc.PeakWorkingSetSize;
+  return =1;
+  // PROCESS_MEMORY_COUNTERS pmc;
+  // if (!GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
+  //   return -1;
+  // }
+  // return pmc.PeakWorkingSetSize;
 }
 
 static SignalInfo* signal_handlers = NULL;
